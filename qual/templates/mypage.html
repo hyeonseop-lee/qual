@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="col-md-9 col-md-offset-1">
+<h1>Mypage</h1>
+<hr></hr>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+  {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+{% endwith %}
+
+<form action="" method="post" class="form-horizontal">
+  {{ form.hidden_tag() }}
+  <div class="form-group">
+    <label class="col-sm-2 form-label">Username</label>
+    <div class="col-sm-10">{{ current_user.username }}</div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 form-label">Note</label>
+    <div class="col-sm-10 full-width">
+      {{ form.note() }}
+    </div>
+    <div class="col-sm-10 col-sm-offset-2">
+      <button type="submit" class="btn btn-default">Change note</button>
+    </div>
+  </div>
+</form>
+
+<div class="form-horizontal">
+  <div class="form-group">
+    <label class="col-sm-2 form-label">Solves</label>
+    <div class="col-sm-10 scrollable">
+      {% if my_solves %}
+      <table class="table table-striped">
+        {% for p in my_solves %}
+        <tr>
+          <td>{{ p[0] }}</td>
+          <td>{{ p[1] }} pts</td>
+          <td>{{ p[2] }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% else %}
+      None yet.
+      {% endif %}
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 form-label">Points</label>
+    <div class="col-sm-10">Total <b>{{ current_user.total }}</b> points</div>
+  </div>
+</div>
+</div>
+{% endblock %}
