@@ -9,17 +9,16 @@
 virtualenv env
 source env/bin/activate
 pip install -r requirements.txt
-./manage.py db init
-./manage.py db migrate
+python manage.py db upgrade
 ```
 
 ### Run
 ```sh
-./run.py
+python manage.py runserver
 ```
 
 ### Migrate after changing models
 ```sh
-./manage.py db migrate
-./manage.py db upgrade
+python manage.py db migrate
+python manage.py db upgrade
 ```
