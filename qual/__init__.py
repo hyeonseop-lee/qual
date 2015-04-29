@@ -2,13 +2,14 @@
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.migrate import Migrate
-from qual.views.frontend import frontend
+from flask.ext.login import LoginManager
 
 app = Flask(__name__)
-app.register_blueprint(frontend, url_prefix='')
-
 db = SQLAlchemy(app)
-
 migrate = Migrate(app, db)
+loginmanager = LoginManager()
+loginmanager.init_app(app)
 
-from qual import models
+from qual.views.frontend import frontend
+
+app.register_blueprint(frontend, url_prefix='')

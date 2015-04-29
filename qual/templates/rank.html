@@ -2,31 +2,31 @@
 
 {% block content %}
 <style>
-  table {
-    word-wrap: break-word;
-    table-layout: fixed;
-  }
+table {
+	word-wrap: break-word;
+	table-layout: fixed;
+}
 </style>
 <div class="col-md-10 col-md-offset-1">
-  <h1>Rank
-    {% if title %}<small>in {{ title[1] }}</small>{% endif %}
-  </h1>
-<hr></hr>
-<table class="table table-striped">
-  <thead>
-    <td class="col-sm-1">#</td>
-    <td class="col-sm-2">Username</td>
-    <td class="col-sm-7">Note</td>
-    <td class="col-sm-2">Point</td>
-  </thead>
-  {% for row in top_users %}
-  <tr>
-    <td class="col-sm-1">{{ loop.index }}</td>
-    <td class="col-sm-2">{{ row[0] }}</td>
-    <td class="col-sm-7">{{ row[1] }}</td>
-    <td class="col-sm-2">{{ row[2] }}</td>
-  </tr>
-  {% endfor %}
-</table>
+	<h1>Rank
+		{% if title %}
+		<small> in {{ title }}</small>
+		{% endif %}
+	</h1>
+	<hr></hr>
+	<table class="table table-striped">
+		<thead>
+			<td class="col-sm-2">#</td>
+			<td class="col-sm-5">Username</td>
+			<td class="col-sm-5">Point</td>
+		</thead>
+		{% for user in users %}
+		<tr>
+			<td class="col-sm-2">{{ loop.index }}</td>
+			<td class="col-sm-5">{{ user.username }}</td>
+			<td class="col-sm-5">{{ user.score }}</td>
+		</tr>
+		{% endfor %}
+	</table>
 </div>
 {% endblock %}

@@ -2,38 +2,30 @@
 
 {% block content %}
 <div class="col-md-6 col-md-offset-3">
-<h1>Register</h1>
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-  {% for category, message in messages %}
-    <div class="alert alert-{{ category }}">{{ message }}</div>
-  {% endfor %}
-{% endif %}
-{% endwith %}
-
-<form action="" method="post" name="register" class="form-horizontal">
-  {{ form.hidden_tag() }}
-  <div class="form-group">
-    <label class="col-sm-2 form-label">Username</label>
-    <div class="col-sm-10 full-width">{{ form.username() }}</div>
-  </div>
-  <div class="form-group">
-    <label class="col-sm-2 form-label">Password</label>
-    <div class="col-sm-10 full-width">{{ form.password() }}</div>
-    <span class="col-sm-offset-2 col-sm-10">At least 4 characters.</span>
-  </div>
-  <div class="form-group">
-    <label class="col-sm-2 form-label">Password Confirm</label>
-    <div class="col-sm-10 full-width">{{ form.confirm() }}</div>
-  </div>
-  <div class="form-group">
-    <label class="col-sm-2 form-label">Note</label>
-    <div class="col-sm-10 full-width">{{ form.note() }}</div>
-    <span class="col-sm-offset-2 col-sm-10">You can change this later in mypage</span>
-  </div>
-  <div class="col-sm-offset-2 col-sm-10">
-    <button type="submit" class="btn btn-default">Register</button>
-  </div>
-</form>
+	<h1>Register</h1>
+	<hr></hr>
+	{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+			{% for category, message in messages %}
+				<div class="alert alert-{{ category }}">{{ message }}</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	<form action="" method="POST" name="register" class="form-horizontal">
+		{{ form.hidden_tag() }}
+		{% macro render_field(field) %}
+			<div class="form-group">
+				<label class="col-sm-2 form-label">{{ field.label }}</label>
+				<div class="col-sm-10 full-width">{{ field() }}</div>
+			</div>
+		{% endmacro %}
+		{{ render_field(form.username) }}
+		{{ render_field(form.password) }}
+		{{ render_field(form.confirm) }}
+		{{ render_field(form.registerkey) }}
+		<div class="col-sm-offset-2 col-sm-10">
+			<button type="submit" class="btn btn-default">Register</button>
+		</div>
+	</form>
 </div>
 {% endblock %}

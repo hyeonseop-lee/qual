@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="col-md-10 col-md-offset-1">
+	<h1>Problems
+		{% if title %}
+		<small> in {{ title }}</small>
+		{% endif %}
+	</h1>
+	<h5>{{ problems|length }} problems in the set. {{ score }} points solved.</h5>
+	<hr></hr>
+	<div clsss="row">
+		{% for problem in problems %}
+		<div class="col-sm-6 col-md-4 col-lg-3">
+			<a href="{{ url_for('prob', pid=prob.id) }}" class="btn btn-success {{ 'solved' if problem.solved else 'not-solved' }} solved btn-lg prob-btn">
+				{{ problem.title }}<br><span class="meta">{{ problem.category_name }} {{ problem.score }}</span>
+			</a>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/btn_deco.js') }}"></script>
+{% endblock %}

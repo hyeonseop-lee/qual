@@ -11,6 +11,13 @@ includes = db.Table('includes',
         db.Column('problem_id', db.Integer, db.ForeignKey('problem.id'))
 )
 
+scores = db.Table('scores',
+        db.Column('problemset_id', db.Integer, db.ForeignKey('problemset.id')),
+        db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+        db.Column('username', db.String(64)),
+        db.Column('score', db.Integer)
+)
+
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -40,7 +47,7 @@ class User(db.Model):
     def is_anonymous(self):
         return False
 
-    def get_it(self):
+    def get_id(self):
         return unicode(self.id)
 
 class Problem(db.Model):
@@ -50,7 +57,7 @@ class Problem(db.Model):
     content = db.Column(db.UnicodeText)
     flag = db.Column(db.String(256))
     score = db.Column(db.Integer)
-    category_name = db.Column(db.Integer, db.ForeignKey('category.name'))
+    category_name = db.Column(db.String(64), db.ForeignKey('category.name'))
 
     def check_flag(self, flag):
         return self.flag == flag
