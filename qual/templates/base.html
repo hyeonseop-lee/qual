@@ -29,11 +29,11 @@
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					{% if current_user.is_authenticated() %}
-						<li><a href="{{ url_for('frontend.mypage') }}">{{ current_user.username }}</a></li>
-						<li><a href="{{ url_for('frontend.logout') }}">Logout</a></li>
+						<li><a href="{{ url_for('frontend.mypage', next=next or request.path) }}">{{ current_user.username }}</a></li>
+						<li><a href="{{ url_for('frontend.logout', next=next or request.path) }}">Logout</a></li>
 					{% else %}
-						<li><a href="{{ url_for('frontend.login') }}">Login</a></li>
-						<li><a href="{{ url_for('frontend.register') }}">Register</a></li>
+						<li><a href="{{ url_for('frontend.login', next=next or request.path) }}">Login</a></li>
+						<li><a href="{{ url_for('frontend.register', next=next or request.path) }}">Register</a></li>
 					{% endif %}
 				</ul>
 			</div>

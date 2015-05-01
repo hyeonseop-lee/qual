@@ -7,6 +7,9 @@ from qual.models import User, Problem, Category, ProblemSet, solves
 
 frontend = Blueprint('frontend', __name__)
 
+loginmanager.login_view = 'frontend.login'
+loginmanager.login_message_category = 'warning'
+
 def fetch_problems(problems):
     score = 0
     for problem in problems:
@@ -25,37 +28,37 @@ def load_user(userid):
 def index():
     return render_template('index.html')
 
-@login_required
 @frontend.route('/prob')
+@login_required
 def problem_index():
     score, problems = fetch_problems(Problem.query.all())
     return render_template('problem_list.html', problems=problems, score=score)
 
-@login_required
 @frontend.route('/prob/<int:problem_id>')
+@login_required
 def problem(problem_id):
     problem = Problem.query.get_or_404(problem_id)
     return render_template('problem.html', problem=problem, solved=problem_solved(problem))
 
-@login_required
 @frontend.route('/category')
+@login_required
 def category_index():
     return render_template('index.html')
 
-@login_required
 @frontend.route('/category/<int:categoty_id>')
+@login_required
 def problem_by_category(category_id):
     category = Category.query.get_or_404(category_id)
     score, problems = fetch_problems(catetory.problems)
     return render_template('problem_list.html', problems=problems, title=catetory.name, score=score)
 
-@login_required
 @frontend.route('/set')
-def problemset_index():
-    return render_template('index.html')
-
 @login_required
+def problemset_index():
+    return render_template('problemset_list.html', problemsets=ProblemSet.query.all())
+
 @frontend.route('/set/<int:problemset_id>')
+@login_required
 def problem_by_problemset(problemset_id):
     problemset = ProblemSet.query.get_or_404(problemset_id)
     score, problems = fetch_problems(problemset.problems)
@@ -65,14 +68,14 @@ def problem_by_problemset(problemset_id):
 def rank():
     return render_template('rank.html', users=User.query.order_by(User.score.desc()))
 
-@login_required
 @frontend.route('/set/<int:problemset_id>/rank')
+@login_required
 def rank_by_problemset(problemset_id):
     problemset = ProblemSet.query.get_or_404(problemset_id)
     return render_template('rank.html', users=scores.query.filter_by(problemset_id=problemset.id).order_by(scores.score.desc()), title=problemset.title)
 
-@login_required
 @frontend.route('/auth/<int:problem_id>', methods=['POST'])
+@login_required
 def auth(problem_id):
     problem = Problem.query.get_or_404(problem_id)
     flag = request.form.get('flag', None)
@@ -99,37 +102,41 @@ def auth(problem_id):
 @frontend.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm(request.form)
+    next = request.args.get('next') or url_for('frontend.index')
     if request.method == 'POST' and form.validate():
         user = User.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
             login_user(user)
-            return redirect(url_for('frontend.index'))
+            return redirect(next)
         else:
             flash('Login failed', 'danger')
-            return render_template('login.html', form=form)
-    return render_template('login.html', form=form)
+            return render_template('login.html', form=form, next=next)
+    return render_template('login.html', form=form, next=next)
 
 @frontend.route('/logout')
 def logout():
+    next = request.args.get('next') or url_for('frontend.index')
     logout_user()
-    return redirect(url_for('frontend.index'))
+    return redirect(next)
 
 @frontend.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm(request.form)
+    next = request.args.get('next') or url_for('frontend.index')
     if request.method == 'POST' and form.validate():
         user = User.query.filter_by(username=form.username.data).first()
         if user:
             flash('Already existing username!', 'danger')
-            return render_template('register.html', form=form)
+            return render_template('register.html', form=form, next=next)
         user = User(form.username.data, form.password.data)
         db.session.add(user)
         db.session.commit()
         login_user(user)
-        return redirect(url_for('frontend.index'))
-    return render_template('register.html', form=form)
+        return redirect(next)
+    return render_template('register.html', form=form, next=next)
 
-@login_required
 @frontend.route('/mypage')
+@login_required
 def mypage():
-    return render_template('index.html')
+    next = request.args.get('next') or url_for('frontend.index')
+    return redirect(next)

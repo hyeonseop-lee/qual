@@ -9,7 +9,7 @@ from qual import app
 app.config.from_object(settings)
 manager = Manager(app)
 
-manager.add_command("runserver", Server(host="0.0.0.0", port=8888))
+manager.add_command("runserver", Server(host="0.0.0.0", port=8888, use_debugger=True))
 manager.add_command('db', MigrateCommand)
 
 if __name__ == "__main__":

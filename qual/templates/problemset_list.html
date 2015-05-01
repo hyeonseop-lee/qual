@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="col-md-10 col-md-offset-1">
+	<h1>Problem Sets</h1>
+	<hr></hr>
+	<table class="table table-striped">
+		<thead>
+			<td class="col-sm-6">Title</td>
+			<td class="col-sm-3">Rank</td>
+			<td class="col-sm-3">Problems</td>
+		</thead>
+		{% for problemset in problemsets %}
+		<tr>
+			<td><a href="{{ url_for('frontend.problem_by_problemset', problemset_id=problemset.id) }}">{{ problemset.title }}</a></td>
+			<td><a href="{{ url_for('frontend.rank_by_problemset', problemset_id=problemset.id) }}">Rank</a></td>
+			<td>{{ problemset.problems_count }}</td>
+		{% endfor %}
+	</table>
+</div>
+{% endblock %}

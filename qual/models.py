@@ -65,8 +65,9 @@ class Problem(db.Model):
 class Category(db.Model):
     __tablename__ = 'category'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True)
+    name = db.Column(db.String(64), index=True, unique=True)
     problems = db.relationship('Problem', backref='category', lazy='dynamic')
+    problems_count = db.Column(db.Integer, default=0)
 
 class ProblemSet(db.Model):
     __tablename__ = 'problemset'
@@ -74,3 +75,4 @@ class ProblemSet(db.Model):
     title = db.Column(db.String(64), index=True, unique=True)
     description = db.Column(db.UnicodeText)
     problems = db.relationship('Problem', secondary=includes, backref=db.backref('problemsets', lazy='dynamic'), lazy='dynamic')
+    problems_count = db.Column(db.Integer, default=0)

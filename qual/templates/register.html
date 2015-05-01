@@ -11,6 +11,17 @@
 			{% endfor %}
 		{% endif %}
 	{% endwith %}
+	{% macro error_field(field) %}
+		{% if field.errors %}
+			{% for error in field.errors %}
+				<div class="alert alert-danger">{{ field.label }}: {{ error }}</div>
+			{% endfor %}
+		{% endif %}
+	{% endmacro %}
+	{{ error_field(form.username) }}
+	{{ error_field(form.password) }}
+	{{ error_field(form.confirm) }}
+	{{ error_field(form.registerkey) }}
 	<form action="" method="POST" name="register" class="form-horizontal">
 		{{ form.hidden_tag() }}
 		{% macro render_field(field) %}
