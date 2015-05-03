@@ -1,6 +1,9 @@
 from flask.ext.login import current_user
 from flask.ext.admin.contrib.sqla import ModelView
 
+from qual import admin, db
+from qual.models import User, Problem, Category, ProblemSet, ProblemSetScore
+
 class AdminView(ModelView):
 	def is_accessible(self):
 		return current_user.admin
@@ -12,7 +15,26 @@ class UserView(AdminView):
 
 class ProblemView(AdminView):
 	column_list = ('title', 'category_name', 'score')
-	form_columns = ('title', 'content', 'flag', 'category')
+	form_columns = ('title', 'content', 'flag', 'score', 'category')
+
+	def on_model_change(self, form, problem, is_create):
+		problem.category_name = problem.category.name
+		for solver in problem.solvers:
+			solver.build_score()
+		for problemset in problem.problemsets:
+			problemset.build_score()
+		for category in Category.query.all():
+			category.problems_count = len(category.problems.all())
+
+	def on_model_delete(self, problem):
+		for solver in problem.solvers:
+			solver.solves.remove(problem)
+			solver.build_score()
+		for problemset in problem.problemsets:
+			problemset.problems.remove(problem)
+			problemset.problems_count -= 1
+			problemset.build_score()
+		problem.category.problems_count -= 1
 
 class CategoryView(AdminView):
 	column_list = ('name', )
@@ -22,8 +44,13 @@ class ProblemSetView(AdminView):
 	column_list = ('title', )
 	form_columns = ('title', 'problems')
 
-from qual import admin, db
-from qual.models import User, Problem, Category, ProblemSet
+	def on_model_change(self, form, problemset, is_create):
+		problemset.problems_count = len(problemset.problems.all())
+		problemset.build_score()
+
+	def on_model_delete(self, problemset):
+		for score in ProblemSetScore.query.filter_by(problemset_id=problemset.id).all():
+			db.session.delete(score)
 
 admin.add_view(UserView(User, db.session))
 admin.add_view(ProblemView(Problem, db.session))

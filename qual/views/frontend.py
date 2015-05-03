@@ -12,7 +12,6 @@ loginmanager.login_message_category = 'warning'
 
 def fetch_problems(problems):
     score = 0
-    problems = [problem for problem in problems]
     for problem in problems:
         problem.solved = problem in current_user.solves
         if problem.solved:
@@ -48,7 +47,7 @@ def category_index():
 @login_required
 def problem_by_category(category_id):
     category = Category.query.get_or_404(category_id)
-    score, problems = fetch_problems(category.problems)
+    score, problems = fetch_problems(category.problems.all())
     return render_template('problem_list.html', problems=problems, title=category.name, score=score)
 
 @frontend.route('/set')
@@ -60,7 +59,7 @@ def problemset_index():
 @login_required
 def problem_by_problemset(problemset_id):
     problemset = ProblemSet.query.get_or_404(problemset_id)
-    score, problems = fetch_problems(problemset.problems)
+    score, problems = fetch_problems(problemset.problems.all())
     return render_template('problem_list.html', problems=problems, title=problemset.title, score=score)
 
 @frontend.route('/rank')
@@ -71,7 +70,7 @@ def rank():
 @login_required
 def rank_by_problemset(problemset_id):
     problemset = ProblemSet.query.get_or_404(problemset_id)
-    return render_template('rank.html', users=ProblemSetScore.query.filter_by(problemset_id=problemset.id).order_by(ProblemSetScore.score.desc()), title=problemset.title)
+    return render_template('rank.html', users=ProblemSetScore.query.filter_by(problemset_id=problemset.id).order_by(ProblemSetScore.score.desc()).all(), title=problemset.title)
 
 @frontend.route('/auth/<int:problem_id>', methods=['POST'])
 @login_required
@@ -84,6 +83,7 @@ def auth(problem_id):
             return redirect(url_for('frontend.problem', problem_id=problem.id))
         else:
             current_user.solve(problem)
+            db.session.commit()
             flash('Correct, Congratulations!', 'success')
             return redirect(url_for('frontend.problem', problem_id=problem.id))
     else:
