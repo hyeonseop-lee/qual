@@ -11,30 +11,28 @@
 	{% endwith %}
 	<h2>{{ problem.title }}
 		{% if solved %}
-		<span class="label label-success">Solved</span>
+		<small>
+			<span class="label label-success">Solved</span>
+		</small>
 		{% endif %}
 	</h2>
 	<hr></hr>
 	<dl class="dl-horizontal">
 		<dt>Category</dt>
 		<dd>
-		<a href="{{ url_for('frontend.problem_by_category', category_id=problem.category) }}">{{ problem.category_name }}</a>
+		<a href="{{ url_for('frontend.problem_by_category', category_id=problem.category_id) }}">{{ problem.category_name }}</a>
 		</dd>
 		<dt>Points</dt><dd>{{ problem.score }} pts</dd>
 		<dt>Appeared in</dt>
 		{% if problem.problemsets %}
 		{% for problemset in problem.problemsets %}
 		<dd>
-		<a href="{{ url_for('problem_by_problemset', problemset_id=problemset.id) }}">{{ problemset.title }}</a>
+		<a href="{{ url_for('frontend.problem_by_problemset', problemset_id=problemset.id) }}">{{ problemset.title }}</a>
 		</dd>
 		{% endfor %}
 		{% else %}
 		<dd>&nbsp;</dd>
 		{% endif %}
-		<dt>Solved by</dt>
-		<dd>
-		{{ problem.solvers|length }} people
-		</dd>
 	</dl>
 	<hr></hr>
 	<div id="problem_content">{{ problem.content }}</div>
@@ -42,7 +40,7 @@
 	<form action="{{ url_for('frontend.auth', problem_id=problem.id) }}" method="post" class="form-inline mar-top20">
 		<div class="form-group">
 			<label class="form-label">Flag</label>
-			<input type="text" name="key" size="60" class="form-control"/>
+			<input type="text" name="flag" size="60" class="form-control"/>
 			<input type="submit" value="Auth!" class="btn btn-default"/>
 		</div>
 	</form>

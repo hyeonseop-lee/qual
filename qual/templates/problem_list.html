@@ -10,9 +10,9 @@
 	<h5>{{ problems|length }} problems in the set. {{ score }} points solved.</h5>
 	<hr></hr>
 	<div clsss="row">
-		{% for problem in problems %}
+		{% for problem in problems|sort(attribute='score') %}
 		<div class="col-sm-6 col-md-4 col-lg-3">
-			<a href="{{ url_for('prob', pid=prob.id) }}" class="btn btn-success {{ 'solved' if problem.solved else 'not-solved' }} solved btn-lg prob-btn">
+			<a href="{{ url_for('frontend.problem', problem_id=problem.id) }}" class="btn {{ 'btn-success solved' if problem.solved else 'btn-default not-solved' }} btn-lg prob-btn">
 				{{ problem.title }}<br><span class="meta">{{ problem.category_name }} {{ problem.score }}</span>
 			</a>
 		</div>

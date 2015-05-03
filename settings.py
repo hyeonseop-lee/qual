@@ -4,3 +4,5 @@
 SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/qual.db'
 
 SECRET_KEY = '/%`vg2KqZOs61/j_JNO5%FemxfP]baUg'
+
+REGISTER_KEY = 'gon'

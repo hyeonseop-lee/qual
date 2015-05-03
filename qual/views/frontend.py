@@ -1,9 +1,9 @@
 # -*- encoding:utf-8 -*-
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask.ext.login import login_required, login_user, logout_user, current_user
-from qual import db, loginmanager
+from qual import app, db, loginmanager
 from qual.forms import LoginForm, RegisterForm
-from qual.models import User, Problem, Category, ProblemSet, solves
+from qual.models import User, Problem, Category, ProblemSet, ProblemSetScore, solves
 
 frontend = Blueprint('frontend', __name__)
 
@@ -12,13 +12,12 @@ loginmanager.login_message_category = 'warning'
 
 def fetch_problems(problems):
     score = 0
+    problems = [problem for problem in problems]
     for problem in problems:
         problem.solved = problem in current_user.solves
-        score += problem.score
+        if problem.solved:
+            score += problem.score
     return score, problems
-
-def problem_solved(problem):
-    return solves.query.filter_by(user_id=current_user.id, problem_id=problem.id).first()
 
 @loginmanager.user_loader
 def load_user(userid):
@@ -38,19 +37,19 @@ def problem_index():
 @login_required
 def problem(problem_id):
     problem = Problem.query.get_or_404(problem_id)
-    return render_template('problem.html', problem=problem, solved=problem_solved(problem))
+    return render_template('problem.html', problem=problem, solved=current_user.solved(problem))
 
 @frontend.route('/category')
 @login_required
 def category_index():
-    return render_template('index.html')
+    return render_template('category_list.html', categories=Category.query.all())
 
-@frontend.route('/category/<int:categoty_id>')
+@frontend.route('/category/<int:category_id>')
 @login_required
 def problem_by_category(category_id):
     category = Category.query.get_or_404(category_id)
-    score, problems = fetch_problems(catetory.problems)
-    return render_template('problem_list.html', problems=problems, title=catetory.name, score=score)
+    score, problems = fetch_problems(category.problems)
+    return render_template('problem_list.html', problems=problems, title=category.name, score=score)
 
 @frontend.route('/set')
 @login_required
@@ -72,27 +71,19 @@ def rank():
 @login_required
 def rank_by_problemset(problemset_id):
     problemset = ProblemSet.query.get_or_404(problemset_id)
-    return render_template('rank.html', users=scores.query.filter_by(problemset_id=problemset.id).order_by(scores.score.desc()), title=problemset.title)
+    return render_template('rank.html', users=ProblemSetScore.query.filter_by(problemset_id=problemset.id).order_by(ProblemSetScore.score.desc()), title=problemset.title)
 
 @frontend.route('/auth/<int:problem_id>', methods=['POST'])
 @login_required
 def auth(problem_id):
     problem = Problem.query.get_or_404(problem_id)
-    flag = request.form.get('flag', None)
+    flag = request.form.get('flag')
     if problem.check_flag(flag):
-        if problem_solved(problem):
+        if current_user.solved(problem):
             flash('Correct, but you already solved this problem.', 'success')
             return redirect(url_for('frontend.problem', problem_id=problem.id))
         else:
-            current_user.score += problem.score
-            for problemset in problem.problemsets:
-                score = scores.query.filter_by(problemset_id=problemset.id, user_id=current_user.id).first()
-                if score:
-                    score.score += problem.score
-                else:
-                    score = scores(problemset.id, current_user.id, current_user.username, problem.score)
-                    db.session.add(score)
-            db.session.commit()
+            current_user.solve(problem)
             flash('Correct, Congratulations!', 'success')
             return redirect(url_for('frontend.problem', problem_id=problem.id))
     else:
@@ -124,6 +115,9 @@ def register():
     form = RegisterForm(request.form)
     next = request.args.get('next') or url_for('frontend.index')
     if request.method == 'POST' and form.validate():
+        if form.registerkey.data != app.config['REGISTER_KEY']:
+            flash('Wrong register key!', 'danger')
+            return render_template('register.html', form=form, next=next)
         user = User.query.filter_by(username=form.username.data).first()
         if user:
             flash('Already existing username!', 'danger')
