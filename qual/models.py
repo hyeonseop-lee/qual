@@ -15,19 +15,21 @@ class User(db.Model):
 	__tablename__ = 'user'
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(64), index=True, unique=True)
+        nickname = db.Column(db.String(64), index=True, unique=True)
 	password = db.Column(db.String(256))
 	score = db.Column(db.Integer)
 	admin = db.Column(db.Boolean)
 	solves = db.relationship('Problem', secondary=solves, backref=db.backref('solvers', lazy='dynamic'), lazy='dynamic')
 
-	def __init__(self, username, password, admin=False):
+	def __init__(self, username, nickname, password, admin=False):
 		self.username = username
+                self.nickname = nickname
 		self.set_password(password)
 		self.score = 0
 		self.admin = admin
 
 	def __repr__(self):
-		return '<User %s>' % (self.username, )
+		return '<User %s %s>' % (self.username, self.nickname)
 
 	def set_password(self, password):
 		self.password = generate_password_hash(password)
@@ -123,11 +125,11 @@ class ProblemSetScore(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	problemset_id = db.Column(db.Integer, db.ForeignKey('problemset.id'))
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-	username = db.Column(db.String(64))
+	nickname = db.Column(db.String(64))
 	score = db.Column(db.Integer)
 
 	def __init__(self, problemset, user, score=0):
 		self.problemset_id = problemset.id
 		self.user_id = user.id
-		self.username = user.username
+		self.nickname = user.nickname
 		self.score = score

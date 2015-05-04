@@ -17,13 +17,13 @@ table {
 	<table class="table table-striped">
 		<thead>
 			<td class="col-sm-2">#</td>
-			<td class="col-sm-5">Username</td>
+			<td class="col-sm-5">Nickname</td>
 			<td class="col-sm-5">Point</td>
 		</thead>
 		{% for user in users %}
 		<tr>
 			<td class="col-sm-2">{{ loop.index }}</td>
-			<td class="col-sm-5">{{ user.username }}</td>
+			<td class="col-sm-5">{{ user.nickname }}</td>
 			<td class="col-sm-5">{{ user.score }}</td>
 		</tr>
 		{% endfor %}

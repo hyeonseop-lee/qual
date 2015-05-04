@@ -10,8 +10,14 @@ class AdminView(ModelView):
 
 class UserView(AdminView):
 	can_create = False
-	column_list = ('username', 'score', 'admin')
-	form_columns = ('username', 'admin')
+	column_list = ('username', 'nickname', 'score', 'admin')
+	form_columns = ('username', 'nickname', 'admin')
+
+	def on_model_change(self, form, user, is_create):
+		ProblemSetScore.query.filter_by(user_id=user.id).update({'nickname': user.nickname})
+
+	def on_mode_delete(self, user):
+		ProblemSetScore.query.filter_by(user_id=user.id).delete()
 
 class ProblemView(AdminView):
 	column_list = ('title', 'category_name', 'score')
@@ -49,8 +55,7 @@ class ProblemSetView(AdminView):
 		problemset.build_score()
 
 	def on_model_delete(self, problemset):
-		for score in ProblemSetScore.query.filter_by(problemset_id=problemset.id).all():
-			db.session.delete(score)
+		ProblemSetScore.query.filter_by(problemset_id=problemset.id).delete()
 
 admin.add_view(UserView(User, db.session))
 admin.add_view(ProblemView(Problem, db.session))
