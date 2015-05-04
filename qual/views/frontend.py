@@ -122,7 +122,7 @@ def register():
         if user:
             flash('Already existing username!', 'danger')
             return render_template('register.html', form=form, next=next)
-        user = User(form.username.data, form.password.data)
+        user = User(form.username.data, form.nickname.data, form.password.data)
         db.session.add(user)
         db.session.commit()
         login_user(user)

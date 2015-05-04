@@ -8,6 +8,7 @@ class LoginForm(Form):
 
 class RegisterForm(Form):
     username = TextField('Username', validators=[DataRequired()])
+    nickname = TextField('Nickname', validators=[DataRequired()])
     password = PasswordField('Password', validators=[Length(min=4)])
     confirm = PasswordField('Confirm Password', validators=[
         DataRequired(),

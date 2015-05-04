@@ -19,6 +19,7 @@
 		{% endif %}
 	{% endmacro %}
 	{{ error_field(form.username) }}
+	{{ error_field(form.nickname) }}
 	{{ error_field(form.password) }}
 	{{ error_field(form.confirm) }}
 	{{ error_field(form.registerkey) }}
@@ -31,6 +32,7 @@
 			</div>
 		{% endmacro %}
 		{{ render_field(form.username) }}
+		{{ render_field(form.nickname) }}
 		{{ render_field(form.password) }}
 		{{ render_field(form.confirm) }}
 		{{ render_field(form.registerkey) }}
