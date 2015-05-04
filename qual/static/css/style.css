@@ -8,7 +8,7 @@
 .facade {
   padding: 150px 0 60px;
   height: 300px;
-  background: url('/static/img/bg.jpg') no-repeat center center;
+  background: url('../img/bg.jpg') no-repeat center center;
   background-color: black;
   background-size: contain;
   width: 100%;
