@@ -1,0 +1,6 @@
+[uwsgi]
+module=manage
+callable=app
+http=0.0.0.0:9999
+virtualenv=env
+processes=4
