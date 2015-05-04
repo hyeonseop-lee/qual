@@ -6,7 +6,7 @@ from qual.models import User, Problem, Category, ProblemSet, ProblemSetScore
 
 class AdminView(ModelView):
 	def is_accessible(self):
-		return current_user.admin
+		return current_user.is_authenticated() and current_user.admin
 
 class UserView(AdminView):
 	can_create = False
