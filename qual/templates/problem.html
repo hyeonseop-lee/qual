@@ -51,7 +51,7 @@
 <script src="{{ url_for('static', filename='js/marked.min.js') }}"></script>
 <script>
 var content = $("#problem_content");
-content.html(marked(content.html(), {
+content.html(marked($("<div/>").html(content.html()).text(), {
 gfm: true,
 tables: true,
 breaks: true,
