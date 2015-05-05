@@ -64,7 +64,7 @@ def problem_by_problemset(problemset_id):
 
 @frontend.route('/rank')
 def rank():
-    return render_template('rank.html', users=User.query.order_by(User.score.desc(), User.updated_at.asc()))
+    return render_template('rank.html', users=User.query.order_by(User.score.desc(), User.updated_at.asc()).all())
 
 @frontend.route('/set/<int:problemset_id>/rank')
 @login_required

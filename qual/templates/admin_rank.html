@@ -1,0 +1,30 @@
+{% extends "admin/master.html" %}
+
+{% block body %}
+<div class="container">
+	<h1>Rank</h1>
+	<hr></hr>
+	<table class="table table-striped">
+		<thead>
+			<th class="col-sm-1">#</th>
+			<th class="col-sm-2">Username</th>
+			<th class="col-sm-2">Nickname</th>
+			<th class="col-sm-1">Point</th>
+			<th class="col-sm-6">Problems</th>
+		</thead>
+		{% for user in users %}
+		<tr>
+			<td class="col-sm-1">{{ loop.index }}</td>
+			<td class="col-sm-2">{{ user.username }}</td>
+			<td class="col-sm-2">{{ user.nickname }}</td>
+			<td class="col-sm-1">{{ user.score }}</td>
+			<td class="col-sm-6">
+				{% for solve in user.solves %}
+					<span class="label label-success">{{ solve.title }}</span>
+				{% endfor %}
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+</div>
+{% endblock %}

@@ -1,14 +1,15 @@
 from flask.ext.login import current_user
+from flask.ext.admin import BaseView, expose
 from flask.ext.admin.contrib.sqla import ModelView
 
 from qual import admin, db
 from qual.models import User, Problem, Category, ProblemSet, ProblemSetScore
 
-class AdminView(ModelView):
+class AdminView(BaseView):
 	def is_accessible(self):
 		return current_user.is_authenticated() and current_user.admin
 
-class UserView(AdminView):
+class UserView(AdminView, ModelView):
 	can_create = False
 	column_list = ('username', 'nickname', 'score', 'admin')
 	form_columns = ('username', 'nickname', 'admin')
@@ -19,7 +20,7 @@ class UserView(AdminView):
 	def on_mode_delete(self, user):
 		ProblemSetScore.query.filter_by(user_id=user.id).delete()
 
-class ProblemView(AdminView):
+class ProblemView(AdminView, ModelView):
 	column_list = ('title', 'category_name', 'score')
 	form_columns = ('title', 'content', 'flag', 'score', 'category')
 
@@ -42,11 +43,11 @@ class ProblemView(AdminView):
 			problemset.build_score()
 		problem.category.problems_count -= 1
 
-class CategoryView(AdminView):
+class CategoryView(AdminView, ModelView):
 	column_list = ('name', )
 	form_columns = ('name', )
 
-class ProblemSetView(AdminView):
+class ProblemSetView(AdminView, ModelView):
 	column_list = ('title', )
 	form_columns = ('title', 'problems')
 
@@ -57,6 +58,12 @@ class ProblemSetView(AdminView):
 	def on_model_delete(self, problemset):
 		ProblemSetScore.query.filter_by(problemset_id=problemset.id).delete()
 
+class RankView(AdminView):
+    @expose('/')
+    def index(self):
+        return self.render('admin_rank.html', users=User.query.order_by(User.score.desc(), User.updated_at.asc()).all())
+
+admin.add_view(RankView(name='Rank'))
 admin.add_view(UserView(User, db.session))
 admin.add_view(ProblemView(Problem, db.session))
 admin.add_view(CategoryView(Category, db.session))
