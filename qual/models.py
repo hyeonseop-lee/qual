@@ -1,5 +1,6 @@
-from qual import db
+import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from qual import db
 
 solves = db.Table('solves',
 		db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
@@ -15,18 +16,20 @@ class User(db.Model):
 	__tablename__ = 'user'
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(64), index=True, unique=True)
-        nickname = db.Column(db.String(64), index=True, unique=True)
+	nickname = db.Column(db.String(64), index=True, unique=True)
 	password = db.Column(db.String(256))
 	score = db.Column(db.Integer)
 	admin = db.Column(db.Boolean)
 	solves = db.relationship('Problem', secondary=solves, backref=db.backref('solvers', lazy='dynamic'), lazy='dynamic')
+	updated_at = db.Column(db.DateTime)
 
 	def __init__(self, username, nickname, password, admin=False):
 		self.username = username
-                self.nickname = nickname
+		self.nickname = nickname
 		self.set_password(password)
 		self.score = 0
 		self.admin = admin
+		self.updated_at = datetime.datetime.utcnow()
 
 	def __repr__(self):
 		return '<User %s %s>' % (self.username, self.nickname)
@@ -53,6 +56,7 @@ class User(db.Model):
 		return db.session.query(solves).filter_by(user_id=self.id, problem_id=problem.id).first()
 
 	def solve(self, problem):
+		self.updated_at = datetime.datetime.utcnow()
 		self.score += problem.score
 		self.solves.append(problem)
 		for problemset in problem.problemsets:
@@ -61,6 +65,7 @@ class User(db.Model):
 				score = ProblemSetScore(problemset, self)
 				db.session.add(score)
 			score.score += problem.score
+			score.updated_at = datetime.datetime.utcnow()
 
 	def build_score(self):
 		self.score = 0
@@ -127,9 +132,11 @@ class ProblemSetScore(db.Model):
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	nickname = db.Column(db.String(64))
 	score = db.Column(db.Integer)
+	updated_at = db.Column(db.DateTime)
 
 	def __init__(self, problemset, user, score=0):
 		self.problemset_id = problemset.id
 		self.user_id = user.id
 		self.nickname = user.nickname
 		self.score = score
+		self.updated_at = datetime.datetime.utcnow()

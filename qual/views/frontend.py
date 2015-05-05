@@ -64,13 +64,13 @@ def problem_by_problemset(problemset_id):
 
 @frontend.route('/rank')
 def rank():
-    return render_template('rank.html', users=User.query.order_by(User.score.desc()))
+    return render_template('rank.html', users=User.query.order_by(User.score.desc(), User.updated_at.asc()))
 
 @frontend.route('/set/<int:problemset_id>/rank')
 @login_required
 def rank_by_problemset(problemset_id):
     problemset = ProblemSet.query.get_or_404(problemset_id)
-    return render_template('rank.html', users=ProblemSetScore.query.filter_by(problemset_id=problemset.id).order_by(ProblemSetScore.score.desc()).all(), title=problemset.title)
+    return render_template('rank.html', users=ProblemSetScore.query.filter_by(problemset_id=problemset.id).order_by(ProblemSetScore.score.desc(), ProblemSetScore.updated_at.asc()).all(), title=problemset.title)
 
 @frontend.route('/auth/<int:problem_id>', methods=['POST'])
 @login_required
