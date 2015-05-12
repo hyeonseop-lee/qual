@@ -17,6 +17,7 @@ class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(64), index=True, unique=True)
 	nickname = db.Column(db.String(64), index=True, unique=True)
+        realname = db.Column(db.String(64))
 	password = db.Column(db.String(256))
 	score = db.Column(db.Integer)
 	admin = db.Column(db.Boolean)

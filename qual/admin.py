@@ -11,8 +11,8 @@ class AdminView(BaseView):
 
 class UserView(AdminView, ModelView):
 	can_create = False
-	column_list = ('username', 'nickname', 'score', 'admin')
-	form_columns = ('username', 'nickname', 'admin')
+	column_list = ('realname', 'username', 'nickname', 'score', 'admin')
+	form_columns = ('realname', 'username', 'nickname', 'admin')
 
 	def on_model_change(self, form, user, is_create):
 		ProblemSetScore.query.filter_by(user_id=user.id).update({'nickname': user.nickname})
