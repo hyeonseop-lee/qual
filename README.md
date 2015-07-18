@@ -12,9 +12,14 @@ pip install -r requirements.txt
 python manage.py db upgrade
 ```
 
-### Run
+### Run for debug
 ```sh
 python manage.py runserver
+```
+
+### Run for production
+```sh
+uwsgi uwsgi.ini
 ```
 
 ### Migrate after changing models
