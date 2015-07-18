@@ -22,18 +22,18 @@
 			</div>
 			<div class="navbar-collapse collapse" id="navbar-main">
 				<ul class="nav navbar-nav">
-					<li class="menu-problem_index"><a href="{{ url_for('frontend.problem_index') }}">Probs</a></li>
-					<li class="menu-category_index"><a href="{{ url_for('frontend.category_index') }}">Categories</a></li>
-					<li class="menu-problemset_index"><a href="{{ url_for('frontend.problemset_index') }}">Prob Sets</a></li>
-					<li class="menu-rank"><a href="{{ url_for('frontend.rank') }}">Rank</a></li>
+					<li class="menu-frontend.problem_index"><a href="{{ url_for('frontend.problem_index') }}">Probs</a></li>
+					<li class="menu-frontend.category_index"><a href="{{ url_for('frontend.category_index') }}">Categories</a></li>
+					<li class="menu-frontend.problemset_index"><a href="{{ url_for('frontend.problemset_index') }}">Prob Sets</a></li>
+					<li class="menu-frontend.rank"><a href="{{ url_for('frontend.rank') }}">Rank</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					{% if current_user.is_authenticated() %}
-						<li><a href="{{ url_for('frontend.mypage', next=next or request.path) }}">{{ current_user.username }}</a></li>
-						<li><a href="{{ url_for('frontend.logout', next=next or request.path) }}">Logout</a></li>
+						<li class="menu-frontend.mypage"><a href="{{ url_for('frontend.mypage', next=next or request.path) }}">{{ current_user.username }}</a></li>
+						<li class="menu-frontend.logout"><a href="{{ url_for('frontend.logout', next=next or request.path) }}">Logout</a></li>
 					{% else %}
-						<li><a href="{{ url_for('frontend.login', next=next or request.path) }}">Login</a></li>
-						<li><a href="{{ url_for('frontend.register', next=next or request.path) }}">Register</a></li>
+						<li class="menu-frontend.login"><a href="{{ url_for('frontend.login', next=next or request.path) }}">Login</a></li>
+						<li class="menu-frontend.register"><a href="{{ url_for('frontend.register', next=next or request.path) }}">Register</a></li>
 					{% endif %}
 				</ul>
 			</div>
@@ -51,7 +51,7 @@
 		</div>
 	</div>
 	<script>
-	$(".menu-{{ request.endpoint }}").addClass("active");
+	$(".menu-{{ request.endpoint|replace('.', '\\\\.') }}").addClass("active");
 	</script>
 	{% block script %}
 	{% endblock %}
