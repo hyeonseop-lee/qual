@@ -24,8 +24,9 @@ class User(db.Model):
     solves = db.relationship('Problem', secondary=solves, backref=db.backref('solvers', lazy='dynamic'), lazy='dynamic')
     updated_at = db.Column(db.DateTime)
 
-    def __init__(self, username, nickname, password, admin=False):
+    def __init__(self, username, realname, nickname, password, admin=False):
         self.username = username
+        self.realname = realname
         self.nickname = nickname
         self.set_password(password)
         self.score = 0

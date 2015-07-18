@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from qual import app, db, loginmanager
-from qual.forms import LoginForm, RegisterForm
+from qual.forms import LoginForm, RegisterForm, MypageForm
 from qual.models import User, Problem, Category, ProblemSet, ProblemSetScore, solves
 
 frontend = Blueprint('frontend', __name__)
@@ -122,15 +122,25 @@ def register():
         if user:
             flash('Already existing username!', 'danger')
             return render_template('register.html', form=form, next=next)
-        user = User(form.username.data, form.nickname.data, form.password.data)
+        user = User(form.username.data, form.realname.data, form.nickname.data, form.password.data)
         db.session.add(user)
         db.session.commit()
         login_user(user)
         return redirect(next)
     return render_template('register.html', form=form, next=next)
 
-@frontend.route('/mypage')
+@frontend.route('/mypage', methods=['GET', 'POST'])
 @login_required
 def mypage():
+    form = MypageForm(request.form)
+    if request.method == 'GET':
+        form.realname.data = current_user.realname
+        form.nickname.data = current_user.nickname
     next = request.args.get('next') or url_for('frontend.index')
-    return redirect(next)
+    if request.method == 'POST' and form.validate():
+        current_user.realname = form.realname.data
+        current_user.nickname = form.nickname.data
+        current_user.set_password(form.password.data)
+        db.session.commit()
+        return redirect(next)
+    return render_template('mypage.html', form=form, next=next)

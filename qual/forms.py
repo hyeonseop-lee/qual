@@ -8,9 +8,18 @@ class LoginForm(Form):
 
 class RegisterForm(Form):
     username = TextField('Username', validators=[DataRequired()])
+    realname = TextField('Realname')
     nickname = TextField('Nickname', validators=[DataRequired()])
     password = PasswordField('Password', validators=[Length(min=4)])
     confirm = PasswordField('Confirm Password', validators=[
         DataRequired(),
         EqualTo('password', message='Passwords must match')])
     registerkey = PasswordField('Register Key', validators=[DataRequired()])
+
+class MypageForm(Form):
+    realname = TextField('Realname')
+    nickname = TextField('Nickname', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[Length(min=4)])
+    confirm = PasswordField('Confirm Password', validators=[
+        DataRequired(),
+        EqualTo('password', message='Passwords must match')])

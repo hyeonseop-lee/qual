@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="col-md-6 col-md-offset-3">
-	<h1>Register</h1>
+	<h1>Mypage</h1>
 	<hr></hr>
 	{% with messages = get_flashed_messages(with_categories=true) %}
 		{% if messages %}
@@ -18,13 +18,11 @@
 			{% endfor %}
 		{% endif %}
 	{% endmacro %}
-	{{ error_field(form.username) }}
 	{{ error_field(form.realname) }}
 	{{ error_field(form.nickname) }}
 	{{ error_field(form.password) }}
 	{{ error_field(form.confirm) }}
-	{{ error_field(form.registerkey) }}
-	<form action="" method="POST" name="register" class="form-horizontal">
+	<form action="" method="POST" name="mypage" class="form-horizontal">
 		{{ form.hidden_tag() }}
 		{% macro render_field(field) %}
 			<div class="form-group">
@@ -32,14 +30,12 @@
 				<div class="col-sm-10 full-width">{{ field() }}</div>
 			</div>
 		{% endmacro %}
-		{{ render_field(form.username) }}
 		{{ render_field(form.realname) }}
 		{{ render_field(form.nickname) }}
 		{{ render_field(form.password) }}
 		{{ render_field(form.confirm) }}
-		{{ render_field(form.registerkey) }}
 		<div class="col-sm-offset-2 col-sm-10">
-			<button type="submit" class="btn btn-default">Register</button>
+			<button type="submit" class="btn btn-default">Modify</button>
 		</div>
 	</form>
 </div>
