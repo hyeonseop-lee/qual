@@ -1,7 +1,7 @@
 # -*- encoding:utf-8 -*-
 
 # SQL Alchemy settings
-SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/qual.db'
+SQLALCHEMY_DATABASE_URI = 'postgresql:///qual'
 
 SECRET_KEY = '/%`vg2KqZOs61/j_JNO5%FemxfP]baUg'
 
