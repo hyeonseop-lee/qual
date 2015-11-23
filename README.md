@@ -9,6 +9,8 @@
 virtualenv env
 source env/bin/activate
 pip install -r requirements.txt
+sudo -u postgres createdb qual
+# need to create settings.py
 python manage.py db upgrade
 ```
 
