@@ -35,6 +35,9 @@
 						<li class="menu-frontend.login"><a href="{{ url_for('frontend.login', next=next or request.path) }}">Login</a></li>
 						<li class="menu-frontend.register"><a href="{{ url_for('frontend.register', next=next or request.path) }}">Register</a></li>
 					{% endif %}
+					{% if current_user.admin %}
+						<li class="menu-frontend.admin"><a href="{{ url_for('admin.index', next=next or request.path) }}">Admin</a></li>
+					{% endif %}
 				</ul>
 			</div>
 		</div>
