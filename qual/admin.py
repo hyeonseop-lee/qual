@@ -13,6 +13,7 @@ class UserView(AdminView, ModelView):
     can_create = False
     column_list = ('realname', 'username', 'nickname', 'score', 'admin')
     form_columns = ('realname', 'username', 'nickname', 'admin')
+    column_searchable_list = ('realname', 'username')
 
     def on_model_change(self, form, user, is_create):
         ProblemSetScore.query.filter_by(user_id=user.id).update({'nickname': user.nickname})
@@ -23,6 +24,7 @@ class UserView(AdminView, ModelView):
 class ProblemView(AdminView, ModelView):
     column_list = ('title', 'category_name', 'score')
     form_columns = ('title', 'content', 'flag', 'score', 'category')
+    column_searchable_list = ('title',)
 
     def on_model_change(self, form, problem, is_create):
         problem.category_name = problem.category.name
